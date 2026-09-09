@@ -145,6 +145,8 @@ input[type=color]{width:100%;height:34px;padding:2px;border:1px solid var(--line
 #sloganTxt{line-height:1.15;text-shadow:0 2px 6px rgba(0,0,0,.25)}
 /* Har text par bahut halki letter-spacing. Aankh se ye 0.1px dikhta nahi, lekin
    purane browsers ke fallback capture me shabdon ke beech ki space bachi rehti hai. */
+/* tarikh hamesha ek hi line me — lambi hone par apne aap chhoti */
+#dateTxt{white-space:nowrap;min-width:0}
 #dateTxt,#timeTxt,#venueTxt,#unameTxt,#umobTxt,#uroleTxt,#sloganTxt,#contactTxt{letter-spacing:.1px}
 
 /* neeche ki patti ab safed nahi — poora gola ek hi red */
@@ -453,15 +455,15 @@ const FONTS = [['Anton','Anton'],['Oswald','Oswald'],['Bebas Neue','Bebas Neue']
 
 const ELEMENTS = [
   {id:'t2',        label:'हेडलाइन',          text:'BLOOD DONATION CAMP 3.0',         font:'Anton',                size:56, color:'#ffd400', weight:400},
-  {id:'dateTxt',   label:'तारीख',            text:'2 October 2026 (Friday)',         font:'Poppins',              size:25, color:'#ffffff', weight:700},
-  {id:'timeTxt',   label:'समय',              text:'10:00 AM – 4:00 PM',              font:'Poppins',              size:25, color:'#ffffff', weight:700},
-  {id:'venueTxt',  label:'जगह',              text:'MCD School Gur Mandi, Delhi-7',   font:'Poppins',              size:25, color:'#ffffff', weight:700},
+  {id:'dateTxt',   label:'तारीख',            text:'2 October 2026 (Friday)',         font:'Poppins',              size:32, color:'#ffffff', weight:700},
+  {id:'timeTxt',   label:'समय',              text:'10:00 AM – 4:00 PM',              font:'Poppins',              size:32, color:'#ffffff', weight:700},
+  {id:'venueTxt',  label:'जगह',              text:'MCD School Gur Mandi, Delhi-7',   font:'Poppins',              size:32, color:'#ffffff', weight:700},
   {id:'unameTxt',  label:'यूज़र का नाम',      text:'आपका नाम',                        font:'Noto Sans Devanagari', size:42, color:'#ffffff', weight:800},
   {id:'umobTxt',   label:'यूज़र का मोबाइल',   text:'98XXXXXX00',                      font:'Poppins',              size:32, color:'#ffffff', weight:700},
-  {id:'uroleTxt',  label:'पद / भूमिका',       text:'संयोजक',                        font:'Noto Sans Devanagari', size:26, color:'#ffe9a8', weight:700},
+  {id:'uroleTxt',  label:'पद / भूमिका',       text:'संयोजक',                        font:'Noto Sans Devanagari', size:40, color:'#ffe9a8', weight:700},
   {id:'sloganTxt', label:'स्लोगन',            text:'रक्तदान महादान जीवनदान',           font:'Noto Sans Devanagari', size:44, color:'#ffffff', weight:800},
   {id:'orgLabel',  label:'ORGANIZED BY लाइन', text:'ORGANIZED BY :',                  font:'Poppins',              size:22, color:'#ffffff', weight:700},
-  {id:'orgName',   label:'संस्था का नाम',      text:'OM SAI SANSTHAN (GUR MANDI) (R)', font:'Anton',                size:40, color:'#ffd400', weight:400},
+  {id:'orgName',   label:'संस्था का नाम',      text:'OM SAI SANSTHAN (GUR MANDI) (R)', font:'Impact',               size:40, color:'#ffd400', weight:400},
   {id:'contactTxt',label:'संपर्क (हाईलाइट)',   text:'MR. VIKRAM SHARMA - 9312403283',  font:'Poppins',              size:26, color:'#111111', weight:800}
 ];
 
@@ -535,13 +537,22 @@ function fitBottom(){
   const on = $('orgName');     if(on) fitOne('orgName', on.offsetWidth);
   const cw = $('contactWrap'); if(cw) fitOne('contactTxt', cw.clientWidth);
 }
+/* tarikh ek line me fit karo */
+function fitDate(){
+  const n = $('dateTxt'); if(!n) return;
+  const row = n.parentElement; if(!row) return;
+  const icon = row.querySelector('svg');
+  const iconW = icon ? icon.getBoundingClientRect().width : 0;
+  const avail = row.clientWidth - iconW - 12;
+  if(avail > 20) fitOne('dateTxt', avail);
+}
 /* user ka naam ek line me fit karo */
 function fitName(){
   const n = $('unameTxt'); if(!n) return;
   fitOne('unameTxt', n.offsetWidth);
   const m = $('umobTxt'); if(m) fitOne('umobTxt', m.offsetWidth);
 }
-function renderAll(){ ELEMENTS.forEach(e=>applyEl(e.id)); applyStyle(); applyLogo2(); fitBottom(); fitName(); }
+function renderAll(){ ELEMENTS.forEach(e=>applyEl(e.id)); applyStyle(); applyLogo2(); fitBottom(); fitName(); fitDate(); }
 
 /* ============ 3. EDITOR CONTROLS ============ */
 const box = $('textEditors');
@@ -563,6 +574,7 @@ box.addEventListener('input', ev=>{
   applyEl(id);
   if(id==='orgName' || id==='contactTxt') fitBottom();
   if(id==='unameTxt' || id==='umobTxt') fitName();
+  if(id==='dateTxt') fitDate();
 });
 
 const bindColor = (elId,key)=> $(elId).addEventListener('input',e=>{ state.colors[key]=e.target.value; applyStyle(); });
@@ -899,7 +911,7 @@ let tId;
 function toast(m){ const t=$('toast'); t.textContent=m; t.classList.add('show'); clearTimeout(tId); tId=setTimeout(()=>t.classList.remove('show'),2800); }
 
 renderAll(); fitPreview();
-if(document.fonts && document.fonts.ready) document.fonts.ready.then(()=>{ fitBottom(); fitName(); fitPreview(); });
+if(document.fonts && document.fonts.ready) document.fonts.ready.then(()=>{ fitBottom(); fitName(); fitDate(); fitPreview(); });
 </script>
 </body>
 </html>
